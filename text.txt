@@ -1,0 +1,118 @@
+const inputBox = document.querySelector(".input");
+const addButton = document.querySelector(".addBtn");
+const notesListWrapper = document.querySelector(".notes-list-wrapper");
+const errorMessage = document.querySelector(".error-message");
+
+// creating/adding new note
+
+let = isEditMode = null;
+function saveNoteToStorage(getCurrentNote) {
+  let notesLists;
+  if (localStorage.getItem("notes") === null) {
+    notesLists = [];
+  } else {
+    notesLists = JSON.parse(localStorage.getItem("notes"));
+  }
+  notesLists.push(getCurrentNote);
+  localStorage.setItem("notes", JSON.stringify(notesLists));
+}
+
+function createNewNoteItem(getCurrentNote) {
+  const li = document.createElement("li");
+  const p = document.createElement("p");
+  p.innerText = getCurrentNote;
+  li.appendChild(p);
+
+  const editBtn = document.createElement("button");
+  editBtn.innerText = "Edit";
+  editBtn.classList.add("btn", "edit-Btn");
+  li.appendChild(editBtn);
+  const deleteBtn = document.createElement("button");
+  deleteBtn.innerText = "Delete";
+  deleteBtn.classList.add("btn", "deleteBtn");
+  li.appendChild(deleteBtn);
+
+  return li;
+}
+
+function addNewNote() {
+  const extractInputText = inputBox.value.trim();
+  console.log(extractInputText);
+  //   validate
+  if (extractInputText.length <= 0) {
+    errorMessage.textContent = "Input fields must not be empty!";
+    errorMessage.style.color = "red";
+    setInterval(() => {
+      errorMessage.textContent = "";
+    }, 3000);
+    return false;
+  }
+
+  function handleEditCurrentNote(currentNote) {
+    let note = JSON.parse(localStorage.getItem("notes"));
+    let index = note.indexOf(currentNote);
+    note[index] = inputBox.value;
+    localStorage.setItem("notes", JSON.stringify(note));
+  }
+
+  if (addButton.innerText === "Edit Note") {
+    handleEditCurrentNote(isEditMode.target.previousElementSibling.innerHTML);
+    isEditMode.target.previousElementSibling.innerHTML = extractInputText;
+    addButton.innerText = "Add Note";
+    inputBox.value = "";
+  } else {
+    const newNoteItem = createNewNoteItem(extractInputText);
+    notesListWrapper.appendChild(newNoteItem);
+    inputBox.value = "";
+    //  saveNoteToLocalStorage
+    saveNoteToStorage(extractInputText);
+  }
+}
+
+function fetchAllNotes() {
+  let notesLists;
+  if (localStorage.getItem("notes" === null)) {
+    notesLists = [];
+  } else {
+    notesLists = JSON.parse(localStorage.getItem("notes"));
+
+    notesLists.forEach((item) => {
+      const extractLi = createNewNoteItem(item);
+      notesListWrapper.appendChild(extractLi);
+    });
+  }
+}
+
+function handleDeleteNotes(CurrentNote) {
+  let notesLists;
+  if (localStorage.getItem("notes") === null) {
+    notesLists = [];
+  } else {
+    notesLists = JSON.parse(localStorage.getItem("notes"));
+  }
+
+  let CurrentNoteText = CurrentNote.children[0].innerHTML;
+  let index = notesLists.indexOf(CurrentNoteText);
+  notesLists.splice(index, 1);
+  localStorage.setItem("notes", JSON.stringify(notesLists));
+}
+
+function handleEditOrDeleteNote(e) {
+  console.log(e.target.previousElementSibling, e.target.innerHTML);
+  if (e.target.innerHTML === "Delete") {
+    notesListWrapper.removeChild(e.target.parentElement);
+    handleDeleteNotes(e.target.parentElement);
+  }
+
+  if (e.target.innerHTML === "Edit") {
+    console.log(e.target.previousElementSibling.innerHTML);
+    inputBox.value = e.target.previousElementSibling.innerHTML;
+    addButton.innerText = "Edit Note";
+    inputBox.focus();
+    isEditMode = e;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", fetchAllNotes);
+addButton.addEventListener("click", addNewNote);
+notesListWrapper.addEventListener("click", handleEditOrDeleteNote);

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Note app</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Notes App</h1>
+      <div class="input-container">
+        <input
+          type="text"
+          name="input"
+          placeholder="Add your notes"
+          id="input"
+          class="input"
+        />
+        <button type="button" class="addBtn">Add Note</button>
+        <p class="error-message"></p>
+      </div>
+      <ul class="notes-list-wrapper"></ul>
+      <div class="deleteAll">Clear All Notes</div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
